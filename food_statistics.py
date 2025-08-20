@@ -37,7 +37,19 @@ class Statistics:
         float
             A média dos valores na coluna.
         """
-        pass
+        dados = self.dataset[column]
+
+        if len(dados) == 0:
+            return 0.0
+
+        soma = 0
+
+        for i in dados:
+            soma += i
+
+        media = soma/len(dados)
+
+        return media
 
     def median(self, column):
         """
@@ -111,7 +123,24 @@ class Statistics:
         float
             A variância dos valores na coluna.
         """
-        pass
+        dados = self.dataset[column]
+
+        if len(dados) == 0:
+            return 0.0
+
+        soma = 0
+
+        for i in dados:
+            soma += i
+
+        media = soma/len(dados)
+        numero_qdr = 0
+        for j in dados:
+            numero_qdr += (j-media)**2
+
+        variancia = numero_qdr/len(dados)
+
+        return variancia
 
     def covariance(self, column_a, column_b):
         """
@@ -132,7 +161,22 @@ class Statistics:
         float
             O valor da covariância entre as duas colunas.
         """
-        pass
+        dados_a = self.dataset[column_a]
+        dados_b = self.dataset[column_b]
+
+        if len(dados_a) == 0 or len(dados_b) == 0:
+            return 0.0
+
+        media_a = sum(dados_a) / len(dados_a)
+        media_b = sum(dados_b) / len(dados_b)
+
+        soma_covar = 0
+        for x, y in zip(dados_a, dados_b):
+            soma_covar += (x - media_a) * (y - media_b)
+
+        covariancia = soma_covar / len(dados_a)
+
+        return covariancia
 
     def itemset(self, column):
         """
@@ -148,7 +192,15 @@ class Statistics:
         set
             Um conjunto com os valores únicos da coluna.
         """
-        pass
+        
+        dados = self.dataset[column]
+        itens_unicos = set(dados)
+
+        return itens_unicos
+    
+
+
+        
 
     def absolute_frequency(self, column):
         """

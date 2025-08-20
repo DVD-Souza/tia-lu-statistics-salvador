@@ -63,5 +63,5 @@ class Statistics:
         
         return frequencia_acumulada
 
-
-
+    
+    
