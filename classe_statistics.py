@@ -15,16 +15,24 @@ class Statistics:
         
         self.dataset = dataset
 
-    def mean(self, column: str) -> float:
-        if column not in self.dataset:
-            raise KeyError(f"A coluna '{column}' não existe no dataset.")
+   def calculate_median(column):
+    data = sorted(column)
+    n = len(data)
+
+    if n == 0:
+        raise ValueError
+
+    # If the number of elements is odd
+    if n % 2 == 1:
+        return data[n // 2]
+    else:
+        # If even, take the average of the two middle values
+        middle1 = data[n // 2 - 1]
+        middle2 = data[n // 2]
+        return (middle1 + middle2) / 2
+
         
-        values = self.dataset[column]
         
-        if not all(isinstance(v, (int, float)) for v in values):
-            raise TypeError
-        
-        return sum(values) / len(values)
 
     def absolute_frequency(self, column: str) -> dict:
         if column not in self.dataset:
