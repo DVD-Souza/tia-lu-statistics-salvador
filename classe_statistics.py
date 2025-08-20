@@ -1,60 +1,58 @@
 class Statistics:
-    def __init__(self, dataset):
+    def __init__(self, dataset: dict):
         if not isinstance(dataset, dict):
-            raise TypeError("O dataset deve ser um dicionário, onde cada chave é uma coluna e o valor é uma lista.")
-        tamanhos = [len(val) for val in dataset.values()]
-        if len(set(tamanhos)) != 1:
-            raise ValueError("Todas as colunas devem ter o mesmo número de elementos.")
-        for coluna, valores in dataset.items():
-            if not valores:
-                raise ValueError(f"A coluna '{coluna}' está vazia.")
-            tipo = type(valores[0])
-            if not all(isinstance(v, tipo) for v in valores):
-                raise TypeError(f"A coluna '{coluna}' deve ter todos os elementos do mesmo tipo.")
+            raise TypeError
+        sizes = [len(values) for values in dataset.values()]
+        if len(set(sizes)) != 1:
+            raise ValueError
+        for column, values in dataset.items():
+            if not values:
+                raise ValueError
+            
+            value_type = type(values[0])
+            if not all(isinstance(v, value_type) for v in values):
+                raise TypeError
+        
         self.dataset = dataset
 
-    def media(self, column):
-        """Calcula a média de uma coluna numérica"""
+    def mean(self, column: str) -> float:
         if column not in self.dataset:
             raise KeyError(f"A coluna '{column}' não existe no dataset.")
         
-        valores = self.dataset[column]
+        values = self.dataset[column]
         
-        # Verifica se são números
-        if not all(isinstance(v, (int, float)) for v in valores):
-            raise TypeError(f"A coluna '{column}' não é numérica, não é possível calcular a média.")
+        if not all(isinstance(v, (int, float)) for v in values):
+            raise TypeError
         
-        return sum(valores) / len(valores)
+        return sum(values) / len(values)
 
-    def calcular_frequencia_absoluta(self, column):
-        """Calcula a frequência absoluta de cada valor em uma coluna"""
+    def absolute_frequency(self, column: str) -> dict:
         if column not in self.dataset:
             raise KeyError(f"A coluna '{column}' não existe no dataset.")
         
-        valores = self.dataset[column]
-        frequencia = {}
+        values = self.dataset[column]
+        frequency = {}
         
-        for valor in valores:
-            if valor in frequencia:
-                frequencia[valor] += 1
-            else:
-                frequencia[valor] = 1
+        for value in values:
+            frequency[value] = frequency.get(value, 0) + 1
         
-        return frequencia
+        return frequency
 
-    def calcular_frequencia_acumulada(self, column):
-        """Calcula a frequência acumulada de cada valor em uma coluna"""
-        frequencia_absoluta = self.calcular_frequencia_absoluta(column)
-        valores_ordenados = sorted(frequencia_absoluta.keys())
+    def cumulative_frequency(self, column: str) -> dict:
+        if column not in self.dataset:
+            raise KeyError(f"A coluna '{column}' não existe no dataset.")
         
-        frequencia_acumulada = {}
-        acumulado = 0
+        absolute_freq = self.absolute_frequency(column)
+        sorted_values = sorted(absolute_freq.keys())
         
-        for valor in valores_ordenados:
-            acumulado += frequencia_absoluta[valor]
-            frequencia_acumulada[valor] = acumulado
+        cumulative_freq = {}
+        cumulative = 0
         
-        return frequencia_acumulada
+        for value in sorted_values:
+            cumulative += absolute_freq[value]
+            cumulative_freq[value] = cumulative
+        
+        return cumulative_freq
 
             
     
