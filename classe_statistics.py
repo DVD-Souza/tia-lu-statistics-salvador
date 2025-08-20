@@ -13,31 +13,25 @@ class Statistics:
                 raise TypeError(f"A coluna '{coluna}' deve ter todos os elementos do mesmo tipo.")
         self.dataset = dataset
 
-    def colunas(self):
-        return list(self.dataset.keys())
-
-    def linhas(self):
-        return len(next(iter(self.dataset.values())))
-
-    def media(self, coluna):
+    def media(self, column):
         """Calcula a média de uma coluna numérica"""
-        if coluna not in self.dataset:
-            raise KeyError(f"A coluna '{coluna}' não existe no dataset.")
+        if column not in self.dataset:
+            raise KeyError(f"A coluna '{column}' não existe no dataset.")
         
-        valores = self.dataset[coluna]
+        valores = self.dataset[column]
         
         # Verifica se são números
         if not all(isinstance(v, (int, float)) for v in valores):
-            raise TypeError(f"A coluna '{coluna}' não é numérica, não é possível calcular a média.")
+            raise TypeError(f"A coluna '{column}' não é numérica, não é possível calcular a média.")
         
         return sum(valores) / len(valores)
 
-    def calcular_frequencia_absoluta(self, coluna):
+    def calcular_frequencia_absoluta(self, column):
         """Calcula a frequência absoluta de cada valor em uma coluna"""
-        if coluna not in self.dataset:
-            raise KeyError(f"A coluna '{coluna}' não existe no dataset.")
+        if column not in self.dataset:
+            raise KeyError(f"A coluna '{column}' não existe no dataset.")
         
-        valores = self.dataset[coluna]
+        valores = self.dataset[column]
         frequencia = {}
         
         for valor in valores:
@@ -47,11 +41,10 @@ class Statistics:
                 frequencia[valor] = 1
         
         return frequencia
-        
 
-    def calcular_frequência_acumulada(self, coluna):
+    def calcular_frequencia_acumulada(self, column):
         """Calcula a frequência acumulada de cada valor em uma coluna"""
-        frequencia_absoluta = self.calcular_frequencia_absoluta(coluna)
+        frequencia_absoluta = self.calcular_frequencia_absoluta(column)
         valores_ordenados = sorted(frequencia_absoluta.keys())
         
         frequencia_acumulada = {}
@@ -63,5 +56,5 @@ class Statistics:
         
         return frequencia_acumulada
 
-    
+            
     
