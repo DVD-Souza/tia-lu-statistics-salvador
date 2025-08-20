@@ -18,6 +18,17 @@ class Statistics:
             O conjunto de dados, onde as chaves representam os nomes das
             colunas e os valores são as listas de dados correspondentes.
         """
+        if not isinstance(dataset, dict):
+            raise TypeError("O dataset deve ser um dicionário.")
+    
+        for column, values in dataset.items():
+            if not isinstance(values, list):
+               raise TypeError("Todos os valores no dicionário do dataset devem ser listas.")
+        
+        lengths = [len(values) for values in dataset.values()]
+        if len(set(lengths)) != 1:
+            raise ValueError("Todas as colunas no dataset devem ter o mesmo tamanho.")
+        
         self.dataset = dataset
 
     def mean(self, column):
@@ -37,8 +48,11 @@ class Statistics:
         float
             A média dos valores na coluna.
         """
+        if column not in self.dataset:
+            raise KeyError(f"A coluna '{column}' não existe no dataset.")
+        
         dados = self.dataset[column]
-
+        
         if len(dados) == 0:
             return 0.0
 
@@ -67,7 +81,22 @@ class Statistics:
         float
             O valor da mediana da coluna.
         """
-        pass
+        if column not in self.dataset:
+            raise KeyError(f"A coluna '{column}' não existe no dataset.")
+        
+        data = self.dataset[column]
+        n = len(data)
+
+        if n == 0:
+           return 0.0
+        
+        sorted_data = sorted(data)
+        if n % 2 == 1:
+            return sorted_data[n // 2]
+        else:
+            middle1 = sorted_data[n // 2 - 1]
+            middle2 = sorted_data[n // 2]
+            return (middle1 + middle2) / 2
 
     def mode(self, column):
         """
@@ -98,8 +127,6 @@ class Statistics:
         modal = [item for item, freq in counts.items() if freq == max_freq]
         
         return modal
-        
-        
 
     def stdev(self, column):
         """
@@ -126,7 +153,7 @@ class Statistics:
         
         sum = 0
         for i in stats:
-            soma+=i
+            sum+=i
         average = sum/len(stats)
         
         squares = 0
@@ -232,10 +259,6 @@ class Statistics:
         itens_unicos = set(dados)
 
         return itens_unicos
-    
-
-
-        
 
     def absolute_frequency(self, column):
         """
@@ -252,7 +275,16 @@ class Statistics:
             Um dicionário onde as chaves são os itens e os valores são
             suas contagens (frequência absoluta).
         """
-        pass
+        if column not in self.dataset:
+            raise KeyError(f"A coluna '{column}' não existe no dataset.")
+        
+        values = self.dataset[column]
+        frequency = {}
+        
+        for value in values:
+            frequency[value] = frequency.get(value, 0) + 1
+        
+        return frequency
 
     def relative_frequency(self, column):
         """
@@ -306,7 +338,26 @@ class Statistics:
             Um dicionário ordenado com os itens como chaves e suas
             frequências acumuladas como valores.
         """
-        pass
+        if column not in self.dataset:
+            raise KeyError(f"A coluna '{column}' não existe no dataset.")
+        
+        if frequency_method == 'absolute':
+            freq = self.absolute_frequency(column)
+        elif frequency_method == 'relative':
+            freq = self.relative_frequency(column)
+        else:
+         raise ValueError("O 'frequency_method' deve ser 'absolute' ou 'relative'.")
+        
+        sorted_values = sorted(freq.keys())
+        cumulative_freq = {}
+        cumulative = 0
+        
+        for value in sorted_values:
+            cumulative += freq[value]
+            cumulative_freq[value] = cumulative
+        
+        return cumulative_freq
+
 
     def conditional_probability(self, column, value1, value2):
         """
@@ -331,6 +382,8 @@ class Statistics:
         float
             A probabilidade condicional, um valor entre 0 e 1.
         """
+        if column not in self.dataset:
+            raise KeyError(f"A coluna '{column}' não existe no dataset.")
         
         stats = self.dataset[column]
         if len(stats) < 2:
@@ -340,7 +393,7 @@ class Statistics:
         count_ba = 0
         
         event = stats[0]
-        for i in stats[1:]:
+        for i in stats[0:]:
             if  event == value2:
                 count_b += 1
                 if i == value1:
@@ -349,6 +402,6 @@ class Statistics:
             
         if count_b > 0:
             prob_a = count_ba/count_b
-            return prob_a
+            return round(prob_a, 7)
         else: 
             return 0.0
